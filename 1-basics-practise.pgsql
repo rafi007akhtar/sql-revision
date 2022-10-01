@@ -83,3 +83,29 @@ SELECT name, website, primary_poc
 ;
 
 /** Commonly when we are using WHERE with non-numeric data fields, we use the LIKE, NOT, or IN operators. */
+-----------------------------------------
+
+/** Topic: Derived columns and aliasing
+Creating a new column that is a combination of existing columns is known as a derived column (or "calculated" or "computed" column). Usually you want to give a name, or "alias," to your new column using the AS keyword.
+
+This derived column, and its alias, are generally only temporary, existing just for the duration of your query. The next time you run a query and access this table, the new column will not be there.
+
+Order of arithmetic operations will happen using the PEDMAS rule.
+*/
+
+-- Create a column that divides the standard_amt_usd by the standard_qty to find the unit price for standard paper for each order. Limit the results to the first 10 orders, and include the id and account_id fields.
+SELECT
+    id,
+    account_id,
+    standard_amt_usd / standard_qty AS unit_price
+FROM orders
+LIMIT 10;
+
+-- Write a query that finds the percentage of revenue that comes from poster paper for each order. You will need to use only the columns that end with _usd. (Try to do this without using the total column.) Display the id and account_id fields also. NOTE - you will receive an error with the correct solution to this question. This occurs because at least one of the values in the data creates a division by zero in your formula. You will learn later in the course how to fully handle this issue. For now, you can just limit your calculations to the first 10 orders, as we did in question #1, and you'll avoid that set of data that causes the problem.
+SELECT
+    id,
+    account_id,
+    (poster_amt_usd / (standard_amt_usd + gloss_amt_usd + poster_amt_usd)) * 100 AS revenue_percentage
+FROM orders
+LIMIT 10;
+-----------------------------------------
