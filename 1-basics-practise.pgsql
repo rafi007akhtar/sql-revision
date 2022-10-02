@@ -198,13 +198,13 @@ SELECT *
     FROM accounts
     WHERE name NOT LIKE 'C%'
     AND name LIKE '%s'
-LIMIT 10;
+LIMIT 10; -- limiting only cause the # rows are too many
 
 -- Write a query that displays the order date and gloss_qty data for all orders where gloss_qty is between 24 and 29. Then look at your output to see if the BETWEEN operator included the begin and end values or not.
 SELECT occurred_at, gloss_qty
     FROM orders
     WHERE gloss_qty BETWEEN 24 and 29
-LIMIT 10;
+LIMIT 10; -- limiting only cause the # rows are too many
 
 -- Use the web_events table to find all information regarding individuals who were contacted via the organic or adwords channels, and started their account at any point in 2016, sorted from newest to oldest.
 SELECT *
@@ -212,5 +212,44 @@ SELECT *
     WHERE channel IN ('organic', 'adwords')
     AND occurred_at BETWEEN '2016-01-01' AND '2017-01-01'
     ORDER BY occurred_at DESC
-LIMIT 10;
+LIMIT 10; -- limiting only cause the # rows are too many
+
 /** NOTE: While BETWEEN is generally inclusive of endpoints, it assumes the time is at 00:00:00 (i.e. midnight) for dates. This is the reason why the right-side endpoint of the period is set at '2017-01-01'. */
+-----------------------------------------
+
+/** Topic: OR
+It will combine conditions and return rows on which any one of those conditions is true.
+
+When combining multiple of these operations, we frequently might need to use parentheses to assure that logic we want to perform is being executed correctly.
+*/
+-- Find list of orders ids where either gloss_qty or poster_qty is greater than 4000. Only include the id field in the resulting table.
+SELECT id
+    FROM orders
+    WHERE gloss_qty > 4000
+    OR poster_qty > 4000
+;
+
+-- Write a query that returns a list of orders where the standard_qty is zero and either the gloss_qty or poster_qty is over 1000.
+SELECT *
+    FROM orders
+    WHERE standard_qty = 0
+    OR (
+        gloss_qty > 1000
+        OR poster_qty > 1000
+    )
+LIMIT 10; -- limiting only cause the # rows are too many
+
+
+-- Find all the company names that start with a 'C' or 'W', and the primary contact contains 'ana' or 'Ana', but it doesn't contain 'eana'.
+SELECT name
+    FROM accounts
+    WHERE (
+        name LIKE 'C%'
+        OR name LIKE 'W%')
+    AND (
+        primary_poc LIKE '%ana%'
+        OR primary_poc LIKE '%Ana%'
+    )
+    AND primary_poc NOT LIKE '%eana%'
+;
+-----------------------------------------
