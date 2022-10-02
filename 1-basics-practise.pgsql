@@ -109,3 +109,45 @@ SELECT
 FROM orders
 LIMIT 10;
 -----------------------------------------
+
+/** Topic: LIKE
+The LIKE operator is frequently used with %. The % tells us that we might want any number of characters leading up to a particular set of characters or following a certain set of characters.
+
+Remember you will need to use single quotes for the text you pass to the LIKE operator.
+*/
+
+-- Use the accounts table to find
+-- All the companies whose names start with 'C'.
+SELECT *
+    FROM accounts
+    WHERE name LIKE 'C%'
+LIMIT 5; -- limiting only cause the # rows are too many
+
+-- All companies whose names contain the string 'one' somewhere in the name.
+SELECT *
+    FROM accounts
+    WHERE name LIKE '%one%'
+LIMIT 10; -- limiting only cause the # rows are too many
+
+-- All companies whose names end with 's'.
+SELECT *
+    FROM accounts
+    WHERE name LIKE '%s'
+LIMIT 10; -- limiting only cause the # rows are too many
+-----------------------------------------
+
+/** Topic: IN
+This operator allows you to use an =, but for more than one item of that particular column.
+*/
+-- Use the accounts table to find the account name, primary_poc, and sales_rep_id for Walmart, Target, and Nordstrom.
+SELECT name, primary_poc, sales_rep_id
+    FROM accounts
+    WHERE name IN ('Walmart', 'Target', 'Nordstrom')
+;
+
+-- Use the web_events table to find all information regarding individuals who were contacted via the channel of organic or adwords.
+SELECT *
+    FROM web_events
+    WHERE channel IN ('orgnaic', 'adwords')
+LIMIT 20; -- limiting only cause the # rows are too many
+-----------------------------------------
