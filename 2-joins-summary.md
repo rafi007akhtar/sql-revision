@@ -20,3 +20,8 @@ There are a few more advanced **JOINs** that we did not cover here, and they are
 
 ## Alias
 You learned that you can alias tables and columns using **AS** or not using it. This allows you to be more efficient in the number of characters you need to write, while at the same time you can assure that your column headings are informative of the data in your table.
+
+## Reference for joining tables
+Use the following image as reference for joining the tables in this lesson. It is obtained from [this](https://video.udacity-data.com/topher/2017/October/59e946e7_erd/erd.png) Udacity link.
+
+![PK, FK](./assets/erd.png)
