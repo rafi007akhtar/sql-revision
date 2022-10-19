@@ -129,7 +129,28 @@ SUM(item)/COUNT(item)
 */
 -----------------------------------------
 
+/** Topic: GROUP BY
+GROUP BY can be used to aggregate data within subsets of the data.
+For example, grouping for different accounts, different regions, or different sales representatives.
 
+Note: SQL evaluates the aggregations before the LIMIT clause.
+*/
 
+-- Which account (by name) placed the earliest order? Your solution should have the account name and the date of the order.
+SELECT
+    a.name account_name, o.occurred_at order_date
+FROM orders AS o
+JOIN accounts AS a
+ON o.account_id = a.id
+ORDER BY o.occurred_at
+LIMIT 1;
+
+-- Find the total sales in usd for each account. You should include two columns - the total sales for each company's orders in usd and the company name.
+SELECT
+    a.name account_name, SUM(o.total_amt_usd) total_sales
+FROM orders AS o
+JOIN accounts AS a
+ON o.account_id = a.id
+GROUP BY a.name;
 
 
