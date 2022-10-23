@@ -391,6 +391,66 @@ FROM accounts a
 JOIN web_events w
 ON w.account_id = a.id
 GROUP BY a.name, w.channel
-ORDER BY channel_count DESC;
+ORDER BY channel_count DESC
+LIMIT 10;
 -----------------------------------------
 
+/** Topic: Working with dates.
+
+The date format (uptil) used here is as follows:
+YYYY-MM-DD hh:min:s
+
+Reason: this makes sorting easy.
+
+DATE_TRUNC(field, date) function allows you to reset all parts of a date beyond filed.
+DATE_PART(field, date) is used to extract a field from a given date.
+*/
+
+-- Find the sales in terms of total dollars for all orders in each year, ordered from greatest to least.
+SELECT
+    DATE_PART('year', occurred_at) years,
+    SUM(total_amt_usd) sale
+FROM orders
+GROUP BY 1
+ORDER BY 2 DESC;
+
+-- Which month did Parch & Posey have the greatest sales in terms of total dollars?
+SELECT
+    DATE_PART('month', occurred_at) mon,
+    SUM(total_amt_usd) sale
+FROM orders
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 1;
+
+-- Which year did Parch & Posey have the greatest sales in terms of total number of orders? Are all years evenly represented by the dataset?
+SELECT
+    DATE_PART('year', occurred_at) years,
+    COUNT(total) order_count
+FROM orders
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 1;
+-- No, there are outliers in 2013 and 2017.
+
+-- Which month did Parch & Posey have the greatest sales in terms of total number of orders?
+SELECT
+    DATE_PART('month', occurred_at) mon,
+    COUNT(total) order_count
+FROM orders
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 1;
+
+-- In which month of which year did Walmart spend the most on gloss paper in terms of dollars?
+SELECT
+    date_trunc('month', occurred_at),
+    SUM(gloss_amt_usd) gloss_amt_total
+FROM orders o
+JOIN accounts a
+ON o.account_id = a.id
+WHERE a.name = 'Walmart'
+GROUP BY 1
+ORDER BY 2 DESC
+LIMIT 1;
+-----------------------------------------
