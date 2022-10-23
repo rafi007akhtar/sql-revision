@@ -261,3 +261,30 @@ ON s.region_id = r.id
 GROUP BY region, w.channel
 ORDER BY channel_occurences DESC;
 -----------------------------------------
+
+/** Topic: DISTINCT
+It removes duplicate rows from the result of a SELECT statement.
+
+Sytax:
+SELECT DISTINCT col1, col2, ...
+FROM table;
+
+NOTE: DISTINCT, particularly in aggregations, can slow your queries down quite a bit.
+*/
+
+-- Use DISTINCT to test if there are any accounts associated with more than one region.
+SELECT DISTINCT a.name, r.name
+FROM accounts a
+JOIN sales_reps s
+ON a.sales_rep_id = s.id
+JOIN region r
+ON s.region_id = r.id;
+
+SELECT a.name, r.name
+FROM accounts a
+JOIN sales_reps s
+ON a.sales_rep_id = s.id
+JOIN region r
+ON s.region_id = r.id;
+-- These two have the same row-count, so no.
+-----------------------------------------
