@@ -258,7 +258,7 @@ JOIN sales_reps s
 ON a.sales_rep_id = s.id
 JOIN region r
 ON s.region_id = r.id
-GROUP BY region, w.channel
+GROUP BY 1, 2  -- 1 means first column, 2 is second column, and so on (can also be used in ORDER BY like this)
 ORDER BY channel_occurences DESC;
 -----------------------------------------
 
@@ -288,3 +288,109 @@ JOIN region r
 ON s.region_id = r.id;
 -- These two have the same row-count, so no.
 -----------------------------------------
+
+/** Topic: HAVING
+The WHERE clause cannot be used for filtering rows based on conditions that have aggregate.
+For conditions that have aggregates, HAVING is used.
+It is put after GROUP BY and before ORDER BY.
+*/
+
+-- How many of the sales reps have more than 5 accounts that they manage?
+SELECT COUNT(*) sales_rep_above5 FROM (
+    SELECT s.name, COUNT(a.name) num_accts
+    FROM accounts a
+    JOIN sales_reps s
+    ON a.sales_rep_id = s.id
+    GROUP BY s.name
+    HAVING COUNT(a.name) > 5
+) AS subquery;
+
+-- How many accounts have more than 20 orders?
+SELECT COUNT(*) accounts_with_orders_above20 FROM (
+    SELECT a.name, COUNT(o.id)
+    FROM orders o
+    JOIN accounts a
+    ON o.account_id = a.id
+    GROUP BY a.name
+    HAVING COUNT(o.id) > 20
+) AS sub;
+
+-- Which account has the most orders?
+SELECT a.name "account with most orders"
+FROM orders o
+JOIN accounts a
+ON o.account_id = a.id
+GROUP BY a.name
+ORDER BY COUNT(o.id) DESC
+LIMIT 1;
+
+-- Which accounts spent more than 30,000 usd total across all orders?
+SELECT
+    a.name "accounts spending more than $30k"
+FROM orders o
+JOIN accounts a
+ON o.account_id = a.id
+GROUP BY a.name
+HAVING SUM(o.total_amt_usd) > 30000
+LIMIT 10;
+
+-- Which accounts spent less than 1,000 usd total across all orders?
+SELECT
+    a.name "accounts spending less than $10k"
+FROM orders o
+JOIN accounts a
+ON o.account_id = a.id
+GROUP BY a.name
+HAVING SUM(o.total_amt_usd) < 1000;
+
+-- Which account has spent the most with us?
+SELECT
+    a.name highest_spending_account
+FROM orders o
+JOIN accounts a
+ON o.account_id = a.id
+GROUP BY a.name
+ORDER BY SUM(o.total_amt_usd) DESC
+LIMIT 1;
+
+-- Which account has spent the least with us?
+SELECT
+    a.name least_spending_account
+FROM orders o
+JOIN accounts a
+ON o.account_id = a.id
+GROUP BY a.name
+ORDER BY SUM(o.total_amt_usd)
+LIMIT 1;
+
+-- Which accounts used facebook as a channel to contact customers more than 6 times?
+SELECT a.name, COUNT(a.name)
+FROM accounts a
+JOIN web_events w
+ON w.account_id = a.id
+WHERE channel = 'facebook'
+GROUP BY a.name
+HAVING COUNT(a.name) > 6
+ORDER BY a.name;
+
+-- Which account used facebook most as a channel?
+SELECT a.name, COUNT(a.name) facebook_count
+FROM accounts a
+JOIN web_events w
+ON w.account_id = a.id
+WHERE channel = 'facebook'
+GROUP BY a.name
+HAVING COUNT(a.name) > 6
+ORDER BY facebook_count DESC
+LIMIT 1;
+-- Note: This query above only works if there are no ties for the account that used facebook the most. It is a best practice to use a larger limit number first such as 3 or 5 to see if there are ties before using LIMIT 1.
+
+-- Which channel was most frequently used by most accounts?
+SELECT a.name, w.channel, COUNT(w.channel) channel_count
+FROM accounts a
+JOIN web_events w
+ON w.account_id = a.id
+GROUP BY a.name, w.channel
+ORDER BY channel_count DESC;
+-----------------------------------------
+
