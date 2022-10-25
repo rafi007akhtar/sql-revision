@@ -402,7 +402,7 @@ YYYY-MM-DD hh:min:s
 
 Reason: this makes sorting easy.
 
-DATE_TRUNC(field, date) function allows you to reset all parts of a date beyond filed.
+DATE_TRUNC(field, date) function allows you to reset all parts of a date beyond field.
 DATE_PART(field, date) is used to extract a field from a given date.
 */
 
