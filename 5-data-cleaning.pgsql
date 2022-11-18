@@ -54,3 +54,34 @@ FROM
 ) t;
 -----------------------------------------
 
+/** Topics: POSITION, STRPOS
+
+Both these methods are used to find the position of a character in a string.
+IMPORTANT:
+    - Both of them are 1-indexed.
+    - Both are case-sensitive. (To override this, make the column into lower or uppercase using LOWER or UPPER functions)
+
+Syntax:
+    - POSITION(char IN col); eg.: POSITION(',' IN city_state)
+    - STRPOS(col, char); eg.: STRPOS(city_state, ',')
+*/
+
+-- Use the accounts table to create first and last name columns that hold the first and last names for the primary_poc.
+SELECT
+    LEFT(primary_poc, (POSITION(' ' IN primary_poc) - 1)) first_name,
+    RIGHT(primary_poc,(
+        length(primary_poc) - strpos(primary_poc, ' '))
+    ) last_name
+FROM accounts
+LIMIT 5;
+
+-- Now see if you can do the same thing for every rep name in the sales_reps table. Again provide first and last name columns.
+SELECT
+    LEFT(name, (POSITION(' ' IN name) - 1)) first_name,
+    RIGHT(name,(
+        length(name) - strpos(name, ' '))
+    ) last_name
+FROM sales_reps
+LIMIT 5;
+-----------------------------------------
+
