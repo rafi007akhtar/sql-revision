@@ -138,5 +138,27 @@ FROM
 ) t;
 -----------------------------------------
 
+/** Topic: COALESCE
+It is used to fill NULL values in a column with a specified non-NULL value.
+COALESCE returns the first non-NULL value passed for each row.
 
+Syntax:
+COALESCE(col_name, value_if_null)
+*/
+SELECT
+    COUNT(*),
+    COALESCE(o.id, a.id) filled_id,
+    COALESCE(o.total_amt_usd, 0),
+    COALESCE(o.standard_amt_usd, 0),
+    COALESCE(o.gloss_amt_usd, 0),
+    COALESCE(o.poster_amt_usd, 0),
+    COALESCE(o.standard_qty, 0),
+    COALESCE(o.gloss_qty, 0),
+    COALESCE(o.poster_qty, 0)
+FROM accounts a
+LEFT JOIN orders o
+ON a.id = o.account_id
+GROUP BY 2, 3, 4, 5, 6, 7, 8, 9
+LIMIT 10;
+-----------------------------------------
 
