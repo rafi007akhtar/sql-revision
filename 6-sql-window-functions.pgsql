@@ -100,3 +100,49 @@ WINDOW account_year_window AS (PARTITION BY account_id ORDER BY DATE_TRUNC('mont
 LIMIT 10;
 -----------------------------------------
 
+/** Topics: LAG and LEAD.
+
+These are used to compare between two consecutive rows.
+`LAG(agg) OVER (partition)` of the current row is the aggregate value of the previous row.
+`LEAD(agg) OVER (partition)` of the current row is the aggregate value of the next row.
+
+The difference between previous row aggregate and current row aggregate is called the lag difference.
+The difference between next row aggregate and current row aggregate is called the lead difference.
+*/
+
+-- Write a query to perform lag and lead differences for the standard sales of an order based on account.
+SELECT
+    account_id,
+    standard_sum,
+    LAG(standard_sum) OVER (ORDER BY standard_sum) AS lag,
+    LEAD(standard_sum) OVER (ORDER BY standard_sum) AS lead,
+    standard_sum - LAG(standard_sum) OVER (ORDER BY standard_sum) AS lag_difference,
+    LEAD(standard_sum) OVER (ORDER BY standard_sum) - standard_sum AS lead_difference
+FROM
+(
+    SELECT
+        account_id,
+        SUM(standard_qty) AS standard_sum
+    FROM orders
+    GROUP BY 1
+) sub
+LIMIT 10;
+
+-- Imagine you're an analyst at Parch & Posey and you want to determine how the current order's total revenue ("total" meaning from sales of all types of paper) compares to the next order's total revenue. Write a query from the previous video in the SQL Explorer below to perform this analysis.
+SELECT
+    occurred_at,
+    total_revenue,
+    LEAD(total_revenue) OVER (ORDER BY occurred_at) lead,
+    LEAD(total_revenue) OVER (ORDER BY occurred_at) - total_revenue AS lead_difference
+FROM
+(
+    SELECT
+        occurred_at,
+        SUM(total_amt_usd) total_revenue
+    FROM orders
+    GROUP BY 1
+) sub
+LIMIT 10;
+-----------------------------------------
+
+
