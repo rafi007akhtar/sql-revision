@@ -103,8 +103,8 @@ LIMIT 10;
 /** Topics: LAG and LEAD.
 
 These are used to compare between two consecutive rows.
-`LAG(agg) OVER (partition)` of the current row is the aggregate value of the previous row.
-`LEAD(agg) OVER (partition)` of the current row is the aggregate value of the next row.
+- `LAG(agg) OVER (partition)`: to compare the aggregate value of the current row with the aggregate value of the previous row.
+- `LEAD(agg) OVER (partition)` to compare the aggregate value of the current row with the aggregate value of the next row.
 
 The difference between previous row aggregate and current row aggregate is called the lag difference.
 The difference between next row aggregate and current row aggregate is called the lead difference.
