@@ -1,3 +1,17 @@
+# Notes on the course topics
+
+The codes and notes in this repo are taken from / inspired by the [SQL for Data Analysis](https://www.udacity.com/course/sql-for-data-analysis--ud198) course on Udacity. The notes / summary on each topic are in the following files.
+
+1. Basics ➔ [ [notes](./1-basics-summary.md) | [code](/1-basics-practise.pgsql) ]
+2. Joins ➔ [ [notes](./2-joins-summary.md) | [code](./2-joins-practise.pgsql) ]
+2. Aggregations ➔ [ [notes](./3-aggregations-notes.md) | [code](./) ]
+2. Subqueries and Temporary Tables ➔ [ [notes](./4-subqueries-and-temporary-tables-summary.md) | [code](./4-subqueries-and-temporary-tables-summary.md) ]
+2. Data Cleaning ➔ [ [notes](./5-data-cleaning-notes.md) | [code part 1](./5-data-cleaning-1.pgsql) | [code part 2](./5-data-cleaning-2.pgsql) ]
+2. Window Functions ➔ [ [notes](./6-sql-window-functions-notes.md) | [code](./6-sql-window-functions.pgsql) ]
+
+It's not complete yet.
+
+
 # Setting up Postgre on Local with VS code
 
 It was painful, but finally done. These are the steps.

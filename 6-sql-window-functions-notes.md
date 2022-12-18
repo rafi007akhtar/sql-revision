@@ -39,7 +39,7 @@ The `RANK()` function produces a numerical rank within the current row's partiti
 */
 
 Example: Ranking the total amount of paper ordered (from highest to lowest) for each account using a partition.
-```
+```SQL
 SELECT
     id,
     account_id,
