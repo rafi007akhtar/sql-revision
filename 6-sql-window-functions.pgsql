@@ -1,4 +1,4 @@
--- NOTE: in many the statements below, I am limiting only cause the # rows are too many.
+-- NOTE: in many of the statements below, I am limiting only cause the # rows are too many.
 
 -- All Window functions (docs): https://www.postgresql.org/docs/8.4/functions-window.html
 
