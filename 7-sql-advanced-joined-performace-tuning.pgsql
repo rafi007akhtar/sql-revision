@@ -137,3 +137,129 @@ GROUP BY name
 LIMIT 15;
 -----------------------------------------
 
+/** Topic: Performance tuning
+
+One way to make a query run faster is to reduce the number of calculations that need to be performed. Some of the high-level things that will affect the number of calculations a given query will make include:
+- Table size
+- Joins
+- Aggregations
+
+Query runtime is also dependent on some things that you can’t really control related to the database itself:
+- Other users running queries concurrently on the database
+- Database software and optimization (e.g., Postgres is optimized differently than Redshift)
+
+Remember:
+- Limiting the dataset will save time in the processing.
+- Aggregations are costly, and happen BEFORE you limit the data. So limiting in an aggregation will not be of much help.
+- Instead, limit the data first and put it in a sub / CTE, and then perform aggregation on it.
+
+Also:
+- If you have time series data, limiting to a small time window can make your queries run more quickly.
+- Testing your queries on a subset of data, finalizing your query, then removing the subset limitation is a sound strategy.
+- When working with subqueries, limiting the amount of data you’re working with in the place where it will be executed first will have the maximum impact on query run time.
+- You can pre-aggregate data of a table of large size before performing join with some other table.
+
+Important: worry about the accuracy of the results before worrying about the run speed.
+*/
+
+-- Optimize the following query by placing the join after the aggreation:
+/**
+SELECT
+    a.name,
+    COUNT(*) AS web_events
+FROM accounts a
+JOIN web_events w
+ON w.account_id = a.id
+GROUP BY 1
+ORDER BY 2 DESC;
+*/
+
+WITH pre_aggregated_data AS (
+    SELECT account_id, COUNT(*) AS web_events
+    FROM web_events
+    GROUP BY 1
+)
+SELECT
+    a.name,
+    p.web_events
+FROM pre_aggregated_data p
+JOIN accounts a
+ON p.account_id = a.id
+ORDER BY 2 DESC
+LIMIT 15;  -- this line is not a part of the solution
+
+/** EXPLAIN keyword gives an estimate on the 'cost' running a statement.
+It is not 100 % accurate, so don't use it as an absoulte measure.
+Instead, use it as a reference.
+*/
+
+-- Use explain to calculate the cost of the above two queries, and see how much optimized the second one is.
+EXPLAIN
+SELECT
+    a.name,
+    COUNT(*) AS web_events
+FROM accounts a
+JOIN web_events w
+ON w.account_id = a.id
+GROUP BY 1
+ORDER BY 2 DESC;
+-- returned cost as 0..351 approx
+
+EXPLAIN
+WITH pre_aggregated_data AS (
+    SELECT account_id, COUNT(*) AS web_events
+    FROM web_events
+    GROUP BY 1
+)
+SELECT
+    a.name,
+    p.web_events
+FROM pre_aggregated_data p
+JOIN accounts a
+ON p.account_id = a.id
+ORDER BY 2 DESC;
+-- returned cost as 0..230 approx
+
+-- Optimize the following by pre-aggregating the needed joins into subs.
+/**
+SELECT o.occurred_at AS date,
+       a.sales_rep_id,
+       o.id AS order_id,
+       we.id AS web_event_id
+FROM   accounts a
+JOIN   orders o
+ON     o.account_id = a.id
+JOIN   web_events we
+ON     DATE_TRUNC('day', we.occurred_at) = DATE_TRUNC('day', o.occurred_at)
+ORDER BY 1 DESC;
+*/
+
+SELECT
+	COALESCE(orders.date, web_events.date) AS date,
+    orders.active_sales_reps,
+    orders.orders,
+    web_events.web_visits
+FROM (
+  SELECT
+      DATE_TRUNC('day', o.occurred_at) date,
+      COUNT(a.sales_rep_id) active_sales_reps,
+      COUNT(o.id) orders
+  FROM accounts a
+  JOIN orders o
+  ON o.account_id = a.id
+  GROUP BY 1
+) orders
+
+FULL JOIN (
+  SELECT
+      DATE_TRUNC('day', we.occurred_at) date,
+      COUNT(we.id) web_visits
+  FROM web_events we
+  GROUP BY 1
+) web_events
+
+ON web_events.date = orders.date
+ORDER BY 1 DESC
+LIMIT 15;  -- not a part of the solution
+-----------------------------------------
+
