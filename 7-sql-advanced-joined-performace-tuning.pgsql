@@ -100,3 +100,40 @@ ORDER BY w1.account_id, w1.occurred_at
 LIMIT 15;
 -----------------------------------------
 
+/** Topic: UNION, UNION ALL
+
+The UNION operator is used to combine the result sets of 2 or more SELECT statements. It removes duplicate rows between the various SELECT statements.
+Each SELECT statement within the UNION must have the same number of fields in the result sets with similar data types.
+UNION removes duplicate rows but UNION ALL does not remove duplicate rows.
+
+Syntax:
+SELECT col1, col2, col3
+FROM tab1
+UNION
+SELECT cola, colb, colc
+FROM tab2
+;
+*/
+
+WITH tab1 AS (SELECT * FROM accounts LIMIT 15)
+SELECT * FROM tab1
+UNION ALL (SELECT * FROM accounts LIMIT 15)
+;
+
+-- Write a query that uses UNION ALL on two instances (and selecting all columns) of the accounts table.
+-- Add a WHERE clause to each of the tables that you unioned in the query above, filtering the first table where name equals Walmart and filtering the second table where name equals Disney. Inspect the results then answer the subsequent quiz.
+SELECT * FROM accounts WHERE name = 'Walmart'
+UNION ALL
+SELECT * FROM accounts WHERE name = 'Disney';
+
+-- Write a query that uses UNION ALL on two instances (and selecting all columns) of the accounts table in a common table expression and name it double_accounts. Then do a COUNT the number of times a name appears in the double_accounts table. If you do this correctly, your query results should have a count of 2 for each name.
+WITH double_accounts AS (
+  SELECT * FROM accounts
+  UNION ALL
+  SELECT * FROM accounts
+)
+SELECT name, COUNT(name) FROM double_accounts
+GROUP BY name
+LIMIT 15;
+-----------------------------------------
+
