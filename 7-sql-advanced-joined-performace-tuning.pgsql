@@ -45,7 +45,7 @@ Here, the JOIN clause will have two operations:
 - one with an = sign
 - one with a comparison operator (like <, > etc.)
 
-You can't have the second without the first.
+You should't put the second without the first.
 
 Also, using comparison operators may produce results that are difficult to predict.
 
@@ -62,5 +62,41 @@ FROM accounts a
 LEFT JOIN sales_reps s
 ON a.sales_rep_id = s.id
 AND a.primary_poc < s.name
-;
+LIMIT 15;
 -----------------------------------------
+
+/** Topic: Self JOINs
+
+These are tables that join onto themselves.
+These ALWAYS need aliases to distinguish b/w left and right tables.
+
+One of the most common use cases for self JOINs is in cases where two events occurred, one after another.
+Using inequalities in conjunction with self JOINs is common.
+
+Syntax:
+SELECT col1, col2, ...
+FROM tab t1
+JOIN tab t2
+ON t1.foreign_key = t2.foreign_key;
+
+Note: Self JOIN is optimal when you want to show both parent and child relationships within a family tree.
+*/
+
+SELECT
+    w1.id AS w1_id,
+    w1.account_id AS w1_account_id,
+    w1.occurred_at AS w1_occured_at,
+    w1.channel AS w1_channel,
+    w2.id AS w2_id,
+    w2.account_id AS w2_account_id,
+    w2.occurred_at AS w2_occured_at,
+    w2.channel AS w2_channel
+FROM web_events w1
+LEFT JOIN web_events w2
+ON w1.account_id = w2.account_id
+AND w2.occurred_at > w1.occurred_at
+AND w2.occurred_at <= w1.occurred_at + INTERVAL '1 DAY'
+ORDER BY w1.account_id, w1.occurred_at
+LIMIT 15;
+-----------------------------------------
+
