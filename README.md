@@ -8,8 +8,8 @@ The codes and notes in this repo are taken from / inspired by the [SQL for Data 
 2. Subqueries and Temporary Tables ➔ [ [notes](./4-subqueries-and-temporary-tables-summary.md) | [code](./4-subqueries-and-temporary-tables-summary.md) ]
 2. Data Cleaning ➔ [ [notes](./5-data-cleaning-notes.md) | [code part 1](./5-data-cleaning-1.pgsql) | [code part 2](./5-data-cleaning-2.pgsql) ]
 2. Window Functions ➔ [ [notes](./6-sql-window-functions-notes.md) | [code](./6-sql-window-functions.pgsql) ]
+2. Advanced Joins and Performance Tuning ➔ [ [notes](./7-sql-advanced-joined-performace-tuning-notes.md) | [code](./7-sql-advanced-joined-performace-tuning.pgsql) ]
 
-It's not complete yet.
 
 
 # Setting up Postgre on Local with VS code
