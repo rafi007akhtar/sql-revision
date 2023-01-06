@@ -203,7 +203,7 @@ JOIN web_events w
 ON w.account_id = a.id
 GROUP BY 1
 ORDER BY 2 DESC;
--- returned cost as 0..351 approx
+-- returned cost as 351 approx
 
 EXPLAIN
 WITH pre_aggregated_data AS (
@@ -218,7 +218,7 @@ FROM pre_aggregated_data p
 JOIN accounts a
 ON p.account_id = a.id
 ORDER BY 2 DESC;
--- returned cost as 0..230 approx
+-- returned cost as 230 approx
 
 -- Optimize the following by pre-aggregating the needed joins into subs.
 /**
